@@ -34,6 +34,8 @@ def splitting_date_into_blocks(X):
 def drop_col_with_coverage(df):
     columns_to_drop = [col for col in df.columns if '_coverage' in col]
     columns_to_drop.append('geocoded_state')
+    columns_to_drop.append('total_patients_hospitalized_confirmed_influenza')
+    # columns_to_drop.append('total_patients_hospitalized_confirmed_influenza_and_covid')
     df.drop(columns=columns_to_drop, inplace=True)
 
     return df

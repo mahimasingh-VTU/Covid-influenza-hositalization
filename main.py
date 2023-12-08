@@ -26,7 +26,9 @@ X_std.drop(columns=state_columns, inplace=True)
 print(X_std.shape)
 X_train, X_test, y_train, y_test = train_test_split(X_std, y, test_size=0.2, shuffle=True, random_state=1)
 
-selected_features = rf_feat_selection_reg(X_train, y_train.values.ravel(), 0.01, True, True)
+# selected_features = rf_feat_selection_reg(X_train, y_train.values.ravel(), 0.01, True, True)
+
+selected_features = ['critical_staffing_shortage_today_no', 'previous_day_admission_adult_covid_confirmed_70-79', 'critical_staffing_shortage_anticipated_within_week_no', 'previous_day_deaths_covid_and_influenza', 'previous_day_admission_adult_covid_confirmed', 'critical_staffing_shortage_today_yes', 'previous_day_admission_adult_covid_confirmed_60-69', 'hospital_onset_covid', 'previous_day_admission_adult_covid_confirmed_80+', 'deaths_covid', 'critical_staffing_shortage_anticipated_within_week_yes']
 
 X_train = X_train[selected_features]
 X_test = X_test[selected_features]
