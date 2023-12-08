@@ -69,7 +69,7 @@ def one_hot_encoding(df):
 
 
 def standardization_data(X, one_hot_encoded_columns, not_one_hot_encoded_columns):
-    print_separator('Scaling the Data set')
+    # print_separator('Scaling the Data set')
     # Scaling the columns that are not one hot encoded
     scaler_x = StandardScaler()
     # Drop the one hot encoded columns and then scale the dataset

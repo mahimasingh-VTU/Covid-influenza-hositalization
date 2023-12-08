@@ -1,8 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+from hyper_parameter_tuning_methods import xgboost_hyper_parameter_tuning
 from pre_processing import drop_col_with_coverage, clean_data_set, pca_analysis, rf_feat_selection_reg
-from regression_methods import perform_linear_regression, perform_svr, perform_xgboost
+from regression_methods import perform_linear_regression, perform_xgboost
 
 df = pd.read_csv('./data/data-6Dec.csv')
 target_name = 'total_patients_hospitalized_confirmed_influenza_and_covid'
@@ -16,6 +17,9 @@ y = pd.DataFrame(target)
 
 X_std, one_hot_encoded_columns, not_one_hot_encoded_columns = clean_data_set(X)
 
+# Dropped columns with state because they came as not important in the feature selection
+# But where taking a lot of time to run the feature selection
+# Needs to be checked again when submitting to show the work
 state_columns = [col for col in X_std.columns if col.startswith('state')]
 
 # null_values = X_std[state_columns].isnull().any()
@@ -35,4 +39,7 @@ X_test = X_test[selected_features]
 
 perform_linear_regression(X_train, y_train, X_test, y_test)
 
-perform_xgboost(X_train, y_train, X_test, y_test)
+best_params = xgboost_hyper_parameter_tuning(X_train, y_train)
+
+perform_xgboost(X_train, y_train, X_test, y_test, best_params=best_params)
+
