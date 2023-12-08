@@ -1,7 +1,30 @@
 from sklearn.model_selection import GridSearchCV
 import xgboost as xgb
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn.linear_model import Ridge
 
 from helpers import print_separator
+
+
+def polynomial_regression_hyper_parameter_tuning(X_train, y_train):
+    model = make_pipeline(PolynomialFeatures(), Ridge())
+
+    # Define the hyperparameters to tune
+    param_grid = {
+        'polynomialfeatures__degree': [1, 2, 3, 4, 5],  # Specify the degrees to be considered
+        'ridge__alpha': [0.1, 1, 10]  # Specify the alpha values for Ridge regression
+    }
+
+    # Perform grid search with cross-validation
+    grid_search = GridSearchCV(model, param_grid, cv=5, scoring='neg_mean_squared_error')
+    grid_search.fit(X_train, y_train)  # X is the input features, y is the target variable
+
+    # Get the best hyperparameters
+    best_degree = grid_search.best_params_['polynomialfeatures__degree']
+    best_alpha = grid_search.best_params_['ridge__alpha']
+
+    return best_degree, best_alpha
 
 
 def xgboost_hyper_parameter_tuning(X_train, y_train):

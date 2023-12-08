@@ -1,9 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from hyper_parameter_tuning_methods import xgboost_hyper_parameter_tuning
+from hyper_parameter_tuning_methods import xgboost_hyper_parameter_tuning, polynomial_regression_hyper_parameter_tuning
 from pre_processing import drop_col_with_coverage, clean_data_set, pca_analysis, rf_feat_selection_reg
-from regression_methods import perform_linear_regression, perform_xgboost
+from regression_methods import perform_linear_regression, perform_xgboost, perform_polynomial_regression
 
 df = pd.read_csv('./data/data-6Dec.csv')
 target_name = 'total_patients_hospitalized_confirmed_influenza_and_covid'
@@ -37,9 +37,16 @@ selected_features = ['critical_staffing_shortage_today_no', 'previous_day_admiss
 X_train = X_train[selected_features]
 X_test = X_test[selected_features]
 
+print(X_train.shape)
+
 perform_linear_regression(X_train, y_train, X_test, y_test)
+
+# Needs hyperparameter tuning
+perform_polynomial_regression(X_train, y_train, X_test, y_test)
 
 best_params = xgboost_hyper_parameter_tuning(X_train, y_train)
 
 perform_xgboost(X_train, y_train, X_test, y_test, best_params=best_params)
+
+
 
