@@ -1,4 +1,5 @@
 import numpy as np
+
 import pandas as pd
 from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestRegressor
@@ -20,6 +21,17 @@ def clean_data_set(df):
 
     return X_std, one_hot_encoded_columns, not_one_hot_encoded_columns
 
+def clean_data_set_PTF(df):
+    X_removed_null = drop_col_with_10per_null(df)
+    X_one, one_hot_encoded_columns, not_one_hot_encoded_columns = one_hot_encoding(X_removed_null)
+
+    # Filling the null values with mean
+    X_one.fillna(X_one.mean(), inplace=True)
+
+    # X_std = standardization_data(X_one, one_hot_encoded_columns, not_one_hot_encoded_columns)
+
+    return X_one, one_hot_encoded_columns, not_one_hot_encoded_columns
+
 
 def splitting_date_into_blocks(X):
     X['day'] = pd.to_datetime(X['date']).dt.day
@@ -31,7 +43,8 @@ def splitting_date_into_blocks(X):
     return X
 
 
-def drop_col_with_coverage(df):
+def drop_cols(df):
+    df = df.drop(df.columns[27:39], axis=1)
     columns_to_drop = [col for col in df.columns if '_coverage' in col]
     columns_to_drop.append('geocoded_state')
     columns_to_drop.append('total_patients_hospitalized_confirmed_influenza')
@@ -78,6 +91,7 @@ def standardization_data(X, one_hot_encoded_columns, not_one_hot_encoded_columns
     X_std = pd.DataFrame(X_std, columns=not_one_hot_encoded_columns)
     # Adding the one hot encoded columns back to the dataset
     X_std[one_hot_encoded_columns] = X[one_hot_encoded_columns]
+    # X_std = pd.concat([X_std, X[one_hot_encoded_columns]], axis=1)
 
     return X_std
 
@@ -88,7 +102,7 @@ def rf_feat_selection_reg(X, y, threshold=0.1, show_importance=False, print_sele
     random_state = 1007
 
     # Doing Random Forest Analysis to check for feature importance
-    rf = RandomForestRegressor(n_estimators=100, random_state=random_state)
+    rf = RandomForestRegressor(n_estimators=30, random_state=random_state)
     rf.fit(X, y)
     # Get the feature importance
     importances = rf.feature_importances_
